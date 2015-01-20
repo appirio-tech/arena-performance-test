@@ -1,9 +1,12 @@
 var users = require("./users");
+var config = require("./config");
 var io = require("socket.io-client");
 
 var testHandler = function(user) {
     this.user = user;
     this.socket = io.connect("https://arenaws.topcoder.com", {"force new connection": true});
+    this.state;
+
     var that = this;
 
     this.login = function() {
@@ -15,7 +18,11 @@ var testHandler = function(user) {
     }
 
     this.postChat = function(message) {
-        that.socket.emit("ChatRequest", {msg: message, roomId: 11, scope: 1});
+        that.socket.emit("ChatRequest", {msg: message, roomId: config.chatRoomId, scope: config.chatGlobalScope});
+    }
+
+    this.openPracticeProblem = function(componentId) {
+        that.socket.emit("OpenComponentForCodingRequest", {componentID: config.practiceComponentId, handle: that.user.username});
     }
 
     // Connect with the web socket and try to login
@@ -26,13 +33,26 @@ var testHandler = function(user) {
     // Receive the login response and move into lobby room
     this.socket.on("LoginResponse", function (resp) {
                     console.log("Logged in user " + that.user.username);
-                    that.moveToRoom(11, 5);
+
+                    that.state = "entering";
+                    that.moveToRoom(config.chatRoomId, config.chatRoomType);
                 });
 
-    // Receive room info and post to chat
+    // Receive room info, post to chat, and open practice room
     this.socket.on("RoomInfoResponse", function (resp) {
-                    that.postChat("hello!");
+                    if(that.state === "entering") {
+                        that.postChat("hello!");
+                        that.state = "practicing";
+                        that.moveToRoom(config.practiceRoomId, config.practiceRoomType);
+                    } else if (that.state === "practicing") {
+                        that.openPracticeProblem(config.practiceRoundId, config.practiceComponentId, config.practiceDivisionId);
+                    }
                 });
+
+    this.socket.on("OpenComponentResponse", function (resp) {
+                    console.log("component opened");
+                });
+
 
     this.socket.on("connect_error", function (resp) {
                     console.log("[ERROR] " + resp);

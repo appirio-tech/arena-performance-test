@@ -38,6 +38,14 @@ var testHandler = function(user) {
         that.socket.emit("CompileRequest", {componentID: componentID, language: languageID, code: code});
     }
 
+    // Keep alive request / response
+    this.keepAlive = function() {
+        setTimeout(function() {
+            that.socket.emit("KeepAliveRequest", {});
+            that.keepAlive();
+        }, 20000);
+    }
+
     // Connect with the web socket and try to login
     this.socket.on("connect", function (resp) {
                     that.login();
@@ -75,6 +83,11 @@ var testHandler = function(user) {
     this.socket.on("connect_error", function (resp) {
                     console.log("[ERROR] " + resp);
                 });
+
+    this.socket.on("KeepAliveResponse", function (resp) {
+                });
+
+    this.keepAlive();
 }
 
 for(var i = 0; i < users.length; i++) {

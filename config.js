@@ -7,5 +7,6 @@ module.exports = {
 	chatRoomId: 11,
 	chatRoomType: 5,
 	chatGlobalScope: 1,
-	javaLanguageId: 1
+	javaLanguageId: 1,
+	matchRoundId: 1
 }

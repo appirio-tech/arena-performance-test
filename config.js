@@ -6,5 +6,6 @@ module.exports = {
 	practiceDivisionId: 2,
 	chatRoomId: 11,
 	chatRoomType: 5,
-	chatGlobalScope: 1
+	chatGlobalScope: 1,
+	javaLanguageId: 1
 }

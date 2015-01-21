@@ -122,7 +122,7 @@ function countConnection() {
         }
     }
 
-    console.log(result + "active connections");
+    console.log(result + " active connections");
 
     setTimeout(countConnection, 30000);
 }

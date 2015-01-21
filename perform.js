@@ -2,6 +2,16 @@ var users = require("./users");
 var config = require("./config");
 var io = require("socket.io-client");
 var fs = require("fs");
+var numberOfUsers = 20;
+var userOffset = 0;
+
+if(process.argv && process.argv[2] && process.argv[3]) {
+    numberOfUsers = Number(process.argv[2]);
+    userOffset = Number(process.argv[3]);
+}
+
+console.log(numberOfUsers);
+console.log(userOffset);
 
 var ABCPathCode = "";
 
@@ -35,7 +45,9 @@ var testHandler = function(user) {
     }
 
     this.compilePracticeProblem = function(componentID, languageID, code) {
-        that.socket.emit("CompileRequest", {componentID: componentID, language: languageID, code: code});
+        setTimeout (function() {
+            that.socket.emit("CompileRequest", {componentID: componentID, language: languageID, code: code});
+        }, Math.floor((Math.random() * 60000 * 5) + 1));
     }
 
     // Keep alive request / response
@@ -78,6 +90,8 @@ var testHandler = function(user) {
                     if(resp.message != "Your code compiled successfully.") {
                         console.log("[ERROR] Practice problem compilation failed: " + JSON.stringify(resp));
                     }
+
+                    that.compilePracticeProblem();
                 });
 
     this.socket.on("connect_error", function (resp) {
@@ -90,7 +104,7 @@ var testHandler = function(user) {
     this.keepAlive();
 }
 
-for(var i = 0; i < users.length; i++) {
+for(var i = userOffset; i < users.length && i < (numberOfUsers + userOffset); i++) {
     var testHandlers = [];
     testHandlers.push(new testHandler(users[i]));
 }

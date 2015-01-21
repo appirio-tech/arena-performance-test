@@ -45,7 +45,7 @@ var testHandler = function(user) {
     }
 
     this.compilePracticeProblem = function(componentID, languageID, code) {
-        if(! that.state === 'dead') {
+        if(that.state != 'dead') {
             setTimeout (function() {
                 console.log(that.user.username + " is compiling");
                 that.socket.emit("CompileRequest", {componentID: componentID, language: languageID, code: code});
@@ -55,7 +55,7 @@ var testHandler = function(user) {
 
     // Keep alive request / response
     this.keepAlive = function() {
-        if(! that.state === 'dead') {
+        if(that.state != 'dead') {
             setTimeout(function() {
                 that.socket.emit("KeepAliveRequest", {});
                 that.keepAlive();

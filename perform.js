@@ -4,6 +4,8 @@ var io = require("socket.io-client");
 var fs = require("fs");
 var numberOfUsers = 20;
 var userOffset = 0;
+var testHandlers = [];
+
 
 if(process.argv && process.argv[2] && process.argv[3]) {
     numberOfUsers = Number(process.argv[2]);
@@ -95,7 +97,7 @@ var testHandler = function(user) {
                     if(resp.message != "Your code compiled successfully.") {
                         console.log("[ERROR] User " + that.user.username + " practice problem compilation failed: " + JSON.stringify(resp));
                         that.state = 'dead';
-                        new testHandler(that.user);
+                        //new testHandler(that.user);
                     } else {
                         that.compilePracticeProblem(config.practiceComponentId, config.javaLanguageId, ABCPathCode);
                     }
@@ -111,7 +113,22 @@ var testHandler = function(user) {
     this.keepAlive();
 }
 
+function countConnection() {
+    var result = 0;
+
+    for(int i = 0; i < testHandler.length; i++) {
+        if(testHandler.state != 'dead') {
+            result++;
+        }
+    }
+
+    console.log(result + "active connections");
+
+    setTimeout(countConnection, 30000);
+}
+
 for(var i = userOffset; i < users.length && i < (numberOfUsers + userOffset); i++) {
-    var testHandlers = [];
     testHandlers.push(new testHandler(users[i]));
+
+
 }

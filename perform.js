@@ -116,7 +116,7 @@ var testHandler = function(user) {
 function countConnection() {
     var result = 0;
 
-    for(int i = 0; i < testHandler.length; i++) {
+    for(var i = 0; i < testHandler.length; i++) {
         if(testHandler.state != 'dead') {
             result++;
         }

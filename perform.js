@@ -89,8 +89,10 @@ var testHandler = function(user) {
     this.socket.on("PopUpGenericResponse", function (resp) {
                     if(resp.message != "Your code compiled successfully.") {
                         console.log("[ERROR] Practice problem compilation failed: " + JSON.stringify(resp));
+                        that.login();
+                    } else {
+                        that.compilePracticeProblem();
                     }
-
                     that.compilePracticeProblem(config.practiceComponentId, config.javaLanguageId, ABCPathCode);
                 });
 

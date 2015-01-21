@@ -130,5 +130,7 @@ function countConnection() {
 for(var i = userOffset; i < users.length && i < (numberOfUsers + userOffset); i++) {
     testHandlers.push(new testHandler(users[i]));
 
-    countConnection();
 }
+
+countConnection();
+

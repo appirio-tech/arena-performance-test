@@ -45,17 +45,22 @@ var testHandler = function(user) {
     }
 
     this.compilePracticeProblem = function(componentID, languageID, code) {
-        setTimeout (function() {
-            that.socket.emit("CompileRequest", {componentID: componentID, language: languageID, code: code});
-        }, Math.floor((Math.random() * 60000 * 5) + 1));
+        if(! that.state === 'dead') {
+            setTimeout (function() {
+                console.log(that.user.username + " is compiling");
+                that.socket.emit("CompileRequest", {componentID: componentID, language: languageID, code: code});
+            }, Math.floor((Math.random() * 60000 * 10)));
+        }
     }
 
     // Keep alive request / response
     this.keepAlive = function() {
-        setTimeout(function() {
-            that.socket.emit("KeepAliveRequest", {});
-            that.keepAlive();
-        }, 20000);
+        if(! that.state === 'dead') {
+            setTimeout(function() {
+                that.socket.emit("KeepAliveRequest", {});
+                that.keepAlive();
+            }, 20000);
+        }
     }
 
     // Connect with the web socket and try to login
@@ -89,11 +94,11 @@ var testHandler = function(user) {
     this.socket.on("PopUpGenericResponse", function (resp) {
                     if(resp.message != "Your code compiled successfully.") {
                         console.log("[ERROR] User " + that.user.username + " practice problem compilation failed: " + JSON.stringify(resp));
-                        that.login();
+                        that.state = 'dead';
+                        new testHandler(that.user);
                     } else {
-                        that.compilePracticeProblem();
+                        that.compilePracticeProblem(config.practiceComponentId, config.javaLanguageId, ABCPathCode);
                     }
-                    that.compilePracticeProblem(config.practiceComponentId, config.javaLanguageId, ABCPathCode);
                 });
 
     this.socket.on("connect_error", function (resp) {

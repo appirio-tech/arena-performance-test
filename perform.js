@@ -91,7 +91,7 @@ var testHandler = function(user) {
                         console.log("[ERROR] Practice problem compilation failed: " + JSON.stringify(resp));
                     }
 
-                    that.compilePracticeProblem();
+                    that.compilePracticeProblem(config.practiceComponentId, config.javaLanguageId, ABCPathCode);
                 });
 
     this.socket.on("connect_error", function (resp) {

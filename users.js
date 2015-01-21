@@ -689,7 +689,6 @@ module.exports = [
 	{ username: "VArtem", password: "appirio123"},
 	{ username: "VNTU_Vespa", password: "appirio123"},
 	{ username: "VUAcoder", password: "appirio123"},
-	{ username: "VasilyPML30", password: "appirio123"},
 	{ username: "Vatsalr23", password: "appirio123"},
 	{ username: "VeryVeryStrawbe", password: "appirio123"},
 	{ username: "Vidy", password: "appirio123"},

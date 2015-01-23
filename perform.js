@@ -62,7 +62,7 @@ var testHandler = function(user) {
             setTimeout (function() {
                 console.log(new Date() + " " + that.user.username + " is compiling");
                 that.socket.emit("CompileRequest", {componentID: componentID, language: languageID, code: code});
-            }, Math.floor((Math.random() * 60000 * 1)));
+            }, Math.floor((Math.random() * 60000 * 5)));
         }
     }
 

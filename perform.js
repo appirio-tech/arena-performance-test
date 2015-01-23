@@ -19,12 +19,12 @@ var codes = [];
 
 fs.readFile("./ABCPath.java", 'utf8', function(err, data) {
   if (err) throw err;
-  codes[0] = data;
+  codes["ABCPath"] = data;
 });
 
 fs.readFile("./ASeries.java", 'utf8', function(err, data) {
   if (err) throw err;
-  codes[1] = data;
+  codes["ASeries"] = data;
 });
 
 var testHandler = function(user) {
@@ -57,12 +57,12 @@ var testHandler = function(user) {
         that.socket.emit("OpenComponentForCodingRequest", {componentID: componentID, handle: that.user.username});
     }
 
-    this.compilePracticeProblem = function(componentID, languageID, code) {
+    this.compilePracticeProblem = function() {
         if(that.state != 'dead') {
             setTimeout (function() {
                 console.log(new Date() + " " + that.user.username + " is compiling");
-                that.socket.emit("CompileRequest", {componentID: componentID, language: languageID, code: code});
-            }, Math.floor((Math.random() * 60000 * 5)));
+                that.socket.emit("CompileRequest", {componentID: that.problem.practiceComponentId, language: config.javaLanguageId, code: codes[that.problem.codeId]});
+            }, Math.floor((Math.random() * 30000 * 1)));
         }
     }
 

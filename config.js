@@ -5,14 +5,16 @@ module.exports = {
 			practiceRoomId: 1527,
 			practiceRoomType: 4,
 			practiceComponentId: 4329,
-			practiceDivisionId: 2
+			practiceDivisionId: 2,
+			codeId: "ABCPath"
 		},
 		{
 			practiceRoundId: 1345,
 			practiceRoomId: 1345,
 			practiceRoomType: 4,
 			practiceComponentId: 1640,
-			practiceDivisionId: 1
+			practiceDivisionId: 1,
+			codeId: "ASeries"
 		}
 	],
 	chatRoomId: 11,

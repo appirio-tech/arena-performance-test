@@ -17,7 +17,7 @@ module.exports = {
 			codeId: "ASeries"
 		}
 	],
-	chatRoomId: 11,
+	chatRoomIds: [11, 12],
 	chatRoomType: 5,
 	chatGlobalScope: 1,
 	javaLanguageId: 1,

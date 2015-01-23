@@ -47,7 +47,7 @@ var testHandler = function(user) {
         console.log(new Date() + " Logged in user " + that.user.username);
 
         that.state = "entering";
-        that.moveToRoom(config.chatRoomIds[Math.floor((Math.random() * 1))], config.chatRoomType);
+        that.moveToRoom(config.chatRoomIds[Math.floor((Math.random() * 2))], config.chatRoomType);
     });
 
     this.moveToRoom = function(roomID, roomType) {

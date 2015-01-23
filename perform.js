@@ -33,7 +33,7 @@ var testHandler = function(user) {
     this.socket = io.connect("https://arenaws.topcoder.com", {"force new connection": true});
     this.state;
 
-    var problemIndex = Math.floor((Math.random() * 1));
+    var problemIndex = Math.floor((Math.random() * 2));
 
     this.problem = config.practiceProblems[problemIndex];
     this.problemCode = codes[problemIndex];

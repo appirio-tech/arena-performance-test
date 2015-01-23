@@ -15,11 +15,16 @@ if(process.argv && process.argv[2] && process.argv[3]) {
 console.log(numberOfUsers);
 console.log(userOffset);
 
-var ABCPathCode = "";
+var codes = [];
 
 fs.readFile("./ABCPath.java", 'utf8', function(err, data) {
   if (err) throw err;
-  ABCPathCode = data;
+  codes[0] = data;
+});
+
+fs.readFile("./ASeries.java", 'utf8', function(err, data) {
+  if (err) throw err;
+  codes[1] = data;
 });
 
 var testHandler = function(user) {
@@ -28,9 +33,15 @@ var testHandler = function(user) {
     this.socket = io.connect("https://arenaws.topcoder.com", {"force new connection": true});
     this.state;
 
+    var problemIndex = Math.floor((Math.random() * 1));
+
+    this.problem = config.practiceProblems[problemIndex];
+    this.problemCode = codes[problemIndex];
+
     var that = this;
 
     this.login = function() {
+        console.log(new Date() + " Sending login request for " + that.user.username);
         that.socket.emit("LoginRequest", that.user);
     }
 
@@ -42,14 +53,14 @@ var testHandler = function(user) {
         that.socket.emit("ChatRequest", {msg: message, roomId: config.chatRoomId, scope: config.chatGlobalScope});
     }
 
-    this.openPracticeProblem = function(componentId) {
-        that.socket.emit("OpenComponentForCodingRequest", {componentID: config.practiceComponentId, handle: that.user.username});
+    this.openPracticeProblem = function(componentID) {
+        that.socket.emit("OpenComponentForCodingRequest", {componentID: componentID, handle: that.user.username});
     }
 
     this.compilePracticeProblem = function(componentID, languageID, code) {
         if(that.state != 'dead') {
             setTimeout (function() {
-                console.log(that.user.username + " is compiling");
+                console.log(new Date() + " " + that.user.username + " is compiling");
                 that.socket.emit("CompileRequest", {componentID: componentID, language: languageID, code: code});
             }, Math.floor((Math.random() * 60000 * 10)));
         }
@@ -72,7 +83,7 @@ var testHandler = function(user) {
 
     // Receive the login response and move into lobby room
     this.socket.on("LoginResponse", function (resp) {
-                    console.log("Logged in user " + that.user.username);
+                    console.log(new Date() + " Logged in user " + that.user.username);
 
                     that.state = "entering";
                     that.moveToRoom(config.chatRoomId, config.chatRoomType);
@@ -83,19 +94,19 @@ var testHandler = function(user) {
                     if(that.state === "entering") {
                         that.postChat("hello!");
                         that.state = "practicing";
-                        that.moveToRoom(config.practiceRoomId, config.practiceRoomType);
+                        that.moveToRoom(that.problem.practiceRoomId, that.problem.practiceRoomType);
                     } else if (that.state === "practicing") {
-                        that.openPracticeProblem(config.practiceRoundId, config.practiceComponentId, config.practiceDivisionId);
+                        that.openPracticeProblem(that.problem.practiceComponentId);
                     }
                 });
 
     this.socket.on("OpenComponentResponse", function (resp) {
-                    that.compilePracticeProblem(config.practiceComponentId, config.javaLanguageId, ABCPathCode);
+                    that.compilePracticeProblem(that.problem.practiceComponentId, config.javaLanguageId, that.problemCode);
                 });
 
     this.socket.on("PopUpGenericResponse", function (resp) {
                     if(resp.message != "Your code compiled successfully.") {
-                        console.log("[ERROR] User " + that.user.username + " practice problem compilation failed: " + JSON.stringify(resp));
+                        console.log(new Date() + " [ERROR] User " + that.user.username + " practice problem compilation failed: " + JSON.stringify(resp));
                         that.state = 'dead';
                         //new testHandler(that.user);
                     } else {
@@ -104,7 +115,7 @@ var testHandler = function(user) {
                 });
 
     this.socket.on("connect_error", function (resp) {
-                    console.log("[ERROR] " + resp);
+                    console.log(new Date() + " [ERROR] " + resp);
                 });
 
     this.socket.on("KeepAliveResponse", function (resp) {

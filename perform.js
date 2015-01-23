@@ -94,7 +94,7 @@ var testHandler = function(user) {
                         that.state = "practicing";
                         setTimeout(function() {
                             that.moveToRoom(that.problem.practiceRoomId, that.problem.practiceRoomType);    
-                        }, Math.floor((Math.random() * 20000 * 1)));
+                        }, Math.floor((Math.random() * 60000 * 10)));
                     } else if (that.state === "practicing") {
                         that.openPracticeProblem(that.problem.practiceComponentId);
                     }

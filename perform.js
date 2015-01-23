@@ -62,7 +62,7 @@ var testHandler = function(user) {
             setTimeout (function() {
                 console.log(new Date() + " " + that.user.username + " is compiling");
                 that.socket.emit("CompileRequest", {componentID: componentID, language: languageID, code: code});
-            }, Math.floor((Math.random() * 60000 * 10)));
+            }, Math.floor((Math.random() * 60000 * 1)));
         }
     }
 
@@ -110,7 +110,7 @@ var testHandler = function(user) {
                         that.state = 'dead';
                         //new testHandler(that.user);
                     } else {
-                        that.compilePracticeProblem(config.practiceComponentId, config.javaLanguageId, ABCPathCode);
+                        that.compilePracticeProblem(that.problem.practiceComponentId, that.problem.javaLanguageId, that.problemCode);
                     }
                 });
 

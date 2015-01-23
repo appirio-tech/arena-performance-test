@@ -59,10 +59,8 @@ var testHandler = function(user) {
 
     this.compilePracticeProblem = function() {
         if(that.state != 'dead') {
-            setTimeout (function() {
-                console.log(new Date() + " " + that.user.username + " is compiling");
-                that.socket.emit("CompileRequest", {componentID: that.problem.practiceComponentId, language: config.javaLanguageId, code: codes[that.problem.codeId]});
-            }, Math.floor((Math.random() * 60000 * 10)));
+            console.log(new Date() + " " + that.user.username + " is compiling");
+            that.socket.emit("CompileRequest", {componentID: that.problem.practiceComponentId, language: config.javaLanguageId, code: codes[that.problem.codeId]});
         }
     }
 
@@ -94,7 +92,9 @@ var testHandler = function(user) {
                     if(that.state === "entering") {
                         //that.postChat("hello!");
                         that.state = "practicing";
-                        that.moveToRoom(that.problem.practiceRoomId, that.problem.practiceRoomType);
+                        setTimeout(function() {
+                            that.moveToRoom(that.problem.practiceRoomId, that.problem.practiceRoomType);    
+                        }, Math.floor((Math.random() * 20000 * 1)));
                     } else if (that.state === "practicing") {
                         that.openPracticeProblem(that.problem.practiceComponentId);
                     }
@@ -110,7 +110,9 @@ var testHandler = function(user) {
                         that.state = 'dead';
                         //new testHandler(that.user);
                     } else {
-                        that.compilePracticeProblem(that.problem.practiceComponentId, that.problem.javaLanguageId, that.problemCode);
+                        that.socket.emit("CloseProblemRequest", {problemID: that.problem.practiceComponentId});
+                        that.state = "entering";
+                        that.moveToRoom(config.chatRoomId, config.chatRoomType);
                     }
                 });
 

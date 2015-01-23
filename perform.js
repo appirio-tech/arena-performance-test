@@ -92,7 +92,7 @@ var testHandler = function(user) {
     // Receive room info, post to chat, and open practice room
     this.socket.on("RoomInfoResponse", function (resp) {
                     if(that.state === "entering") {
-                        that.postChat("hello!");
+                        //that.postChat("hello!");
                         that.state = "practicing";
                         that.moveToRoom(that.problem.practiceRoomId, that.problem.practiceRoomType);
                     } else if (that.state === "practicing") {

@@ -62,7 +62,6 @@ var testHandler = function(user) {
         	that.state = "registering";
             that.socket.emit("RegisterRequest", {roundID: config.matchRoundId, surveyData: []});
         } else if (that.state == "entering-match") {
-        	console.log("sending EnterRoundRequest " + JSON.stringify(resp));
        	    that.socket.emit("EnterRoundRequest", {roundID: config.matchRoundId});
        	    that.state = "in-match";
 

@@ -21,6 +21,6 @@ module.exports = {
 	chatRoomType: 5,
 	chatGlobalScope: 1,
 	javaLanguageId: 1,
-	matchRoundId: 16251,
+	matchRoundId: 16252,
 
 }

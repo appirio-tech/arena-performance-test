@@ -31,6 +31,7 @@ var testHandler = function(user) {
     this.socket = io.connect("https://arenaws.topcoder.com", {"force new connection": true});
     this.state = "";
     var that = this;
+    this.problem = config.practiceProblems[0];
 
     // Connect with the web socket and try to login
     this.socket.on("connect", function (resp) {
@@ -46,7 +47,8 @@ var testHandler = function(user) {
     this.socket.on("LoginResponse", function (resp) {
         console.log(new Date() + " Logged in user " + that.user.username);
 
-        that.state = "entering";
+        //that.state = "entering";
+        that.state = "entering-match";
         that.moveToRoom(config.chatRoomIds[Math.floor((Math.random() * 2))], config.chatRoomType);
     });
 
@@ -59,8 +61,28 @@ var testHandler = function(user) {
         if(that.state === "entering") {
         	that.state = "registering";
             that.socket.emit("RegisterRequest", {roundID: config.matchRoundId, surveyData: []});
+        } else if (that.state == "entering-match") {
+        	console.log("sending EnterRoundRequest " + JSON.stringify(resp));
+       	    that.socket.emit("EnterRoundRequest", {roundID: config.matchRoundId});
+       	    that.state = "in-match";
+
+       	    console.log(new Date() + " " + that.user.username + " is in the match");
+
+       	    that.socket.emit("OpenComponentForCodingRequest", {componentID: that.problem.practiceComponentId, handle: that.user.username});
         }
     });
+
+    this.socket.on("OpenComponentResponse", function (resp) {
+     	console.log(new Date() + " " + that.user.username + " opened the problem");
+        that.compileProblem();
+    });
+
+    this.compileProblem = function() {
+        if(that.state != 'dead') {
+            console.log(new Date() + " " + that.user.username + " is compiling");
+            that.socket.emit("CompileRequest", {componentID: that.problem.practiceComponentId, language: config.javaLanguageId, code: codes[that.problem.codeId]});
+        }
+    }
 
     this.socket.on("PopUpGenericResponse", function (resp) {
     	if(that.state === "registering") {
@@ -69,7 +91,16 @@ var testHandler = function(user) {
     		} else {
     			console.log(new Date() + " [ERROR] Registration failed for user " + that.user.username + " " + resp.message);
     		}
-    	}
+    	} else if (that.state == "in-match") {
+            if(resp.message != "Your code compiled successfully.") {
+                console.log(new Date() + " [ERROR] User " + that.user.username + " practice problem compilation failed: " + JSON.stringify(resp));
+                that.state = 'dead';
+            } else {
+            	setTimeout(function() {
+            		that.compileProblem();
+            	}, Math.floor((Math.random() * 60000 * 5)));
+            }
+        }
 	});
 
     this.postChat = function(message) {

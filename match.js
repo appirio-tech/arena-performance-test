@@ -47,8 +47,8 @@ var testHandler = function(user) {
     this.socket.on("LoginResponse", function (resp) {
         console.log(new Date() + " Logged in user " + that.user.username);
 
-        that.state = "entering";
-        //that.state = "entering-match";
+        //that.state = "entering";
+        that.state = "entering-match";
         that.moveToRoom(config.chatRoomIds[Math.floor((Math.random() * 2))], config.chatRoomType);
     });
 

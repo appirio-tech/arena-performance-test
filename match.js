@@ -85,6 +85,7 @@ var testHandler = function(user) {
 
     this.socket.on("PopUpGenericResponse", function (resp) {
     	if(that.state === "registering") {
+    		that.state = "registered";
     		if(resp.message == "You have successfully registered for the match." || resp.message == "You are already registered for Load Testing SRM 1") {
     			console.log(new Date() + " Registered " + that.user.username);
     		} else {
